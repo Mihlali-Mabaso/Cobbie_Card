@@ -241,10 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- SHARE BUTTON -->
       <button class="btn-share" id="btn-share" type="button">
-        <span>📤</span>
+        <span class="btn-share-icon">📤</span>
         <span>
-          Share your card!
-          <span class="btn-share-sub">Invite your friends →</span>
+          Share Your Card!
+          <span class="btn-share-sub">Download &amp; invite your friends 🎉</span>
         </span>
       </button>
       <p class="pass-tip">✦ Show this card at the door on the day ✦</p>
@@ -256,60 +256,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* --------------------------------------------------
-     SHARE CARD → Download as PNG image
+     SHARE CARD → Download PNG then show Invite Modal
+     Rasterise the SVG avatar first so html2canvas paints it.
   -------------------------------------------------- */
   async function shareCard(attendee) {
-    const cardEl = document.getElementById('cobby-pass');
+    const cardEl   = document.getElementById('cobby-pass');
     const shareBtn = document.getElementById('btn-share');
-
     if (!cardEl) return;
 
-    /* Show loading state on button */
+    /* Loading state */
     const originalHTML = shareBtn.innerHTML;
-    shareBtn.innerHTML = `<span>⏳</span><span>Preparing download…</span>`;
-    shareBtn.disabled = true;
+    shareBtn.innerHTML = `<span>⏳</span><span>Preparing…</span>`;
+    shareBtn.disabled  = true;
+
+    const avatarImg = cardEl.querySelector('.pass-avatar-center');
+    let   originalSrc = null;
+    let   pngDataUrl  = null;
 
     try {
-      /* Wait for avatar image to fully load before capturing */
-      const avatarImg = cardEl.querySelector('.pass-avatar-center');
-      if (avatarImg && !avatarImg.complete) {
-        await new Promise(resolve => {
-          avatarImg.onload  = resolve;
-          avatarImg.onerror = resolve; // continue even if image failed
-        });
+      /* ── Step 1: Fetch SVG → rasterise to PNG data-URL ── */
+      if (avatarImg && avatarImg.src) {
+        originalSrc = avatarImg.src;
+        try {
+          const resp    = await fetch(originalSrc);
+          const svgText = await resp.text();
+          const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+          const blobUrl = URL.createObjectURL(svgBlob);
+
+          const rasterised = await new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+              const offscreen = document.createElement('canvas');
+              offscreen.width  = 320;
+              offscreen.height = 320;
+              offscreen.getContext('2d').drawImage(img, 0, 0, 320, 320);
+              URL.revokeObjectURL(blobUrl);
+              resolve(offscreen.toDataURL('image/png'));
+            };
+            img.onerror = (err) => { URL.revokeObjectURL(blobUrl); reject(err); };
+            img.src = blobUrl;
+          });
+
+          avatarImg.src = rasterised;
+          await new Promise(r => setTimeout(r, 120));
+        } catch (fetchErr) {
+          console.warn('[Cobby Card] Avatar rasterise failed:', fetchErr.message);
+        }
       }
 
-      /* Render card to canvas at 2× resolution for crisp PNG */
+      /* ── Step 2: Render card to canvas at 2× ── */
       const canvas = await html2canvas(cardEl, {
-        scale:       2,
-        useCORS:     true,     // allow DiceBear cross-origin SVGs
-        allowTaint:  false,
-        backgroundColor: null, // preserve transparent areas
-        logging:     false,
+        scale:           2,
+        useCORS:         false,
+        allowTaint:      true,
+        backgroundColor: '#ffffff',
+        logging:         false,
       });
+      pngDataUrl = canvas.toDataURL('image/png');
 
-      /* Trigger download */
-      const link     = document.createElement('a');
+      /* ── Step 3: Trigger PNG download ── */
       const safeName = (attendee.name || 'cobby-card')
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '');
-      link.download  = `cobby-card-${safeName}-${attendee.studentNumber}.png`;
-      link.href      = canvas.toDataURL('image/png');
+        .toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const link    = document.createElement('a');
+      link.download = `cobby-card-${safeName}.png`;
+      link.href     = pngDataUrl;
       link.click();
 
-      showToast('📥 Card downloaded!', 'success');
+      /* ── Step 4: Show invite modal ── */
+      showInviteModal(attendee, pngDataUrl);
+
     } catch (err) {
       console.error('[Cobby Card] Download failed:', err);
       showToast('❌ Download failed – try again.', 'error');
     } finally {
-      /* Restore button */
+      if (avatarImg && originalSrc) avatarImg.src = originalSrc;
       shareBtn.innerHTML = originalHTML;
       shareBtn.disabled  = false;
-      /* Re-attach click listener lost when innerHTML was swapped */
       shareBtn.addEventListener('click', () => shareCard(attendee));
     }
   }
+
+  /* --------------------------------------------------
+     INVITE MODAL – simple confirmation after download
+  -------------------------------------------------- */
+  function showInviteModal(attendee, pngDataUrl) {
+    document.getElementById('invite-modal')?.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id        = 'invite-modal';
+    overlay.className = 'invite-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Card downloaded');
+
+    const firstName = attendee.name.split(' ')[0];
+
+    overlay.innerHTML = `
+      <div class="invite-modal">
+        <button class="invite-close" id="invite-close" aria-label="Close">✕</button>
+
+        <div class="invite-confetti" aria-hidden="true">
+          <span>🎉</span><span>🎊</span><span>✨</span><span>🎈</span><span>⭐</span>
+        </div>
+
+        <h2 class="invite-title">Card downloaded! 📥</h2>
+        <p class="invite-sub">
+          Hey <strong>${escapeHtml(firstName)}</strong>, your Cobby Card is saved!<br/>
+          Now share it with your friends and invite them to get theirs 🙌
+        </p>
+
+        <div class="invite-preview">
+          <img src="${pngDataUrl}" alt="Your Cobby Card" class="invite-card-thumb" />
+        </div>
+
+        <p class="invite-friend-tip">📲 Send the image to your friends &amp; tell them to download their card too!</p>
+
+        <button class="invite-btn invite-btn--done" id="invite-done">Done ✓</button>
+
+        <p class="invite-tagline">✦ Breath life to your coding skills ✦</p>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const close = () => { overlay.classList.add('invite-leaving'); setTimeout(() => overlay.remove(), 300); };
+    document.getElementById('invite-close').addEventListener('click', close);
+    document.getElementById('invite-done').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+    requestAnimationFrame(() => overlay.classList.add('invite-visible'));
+  }
+
 
 
   /* --------------------------------------------------
