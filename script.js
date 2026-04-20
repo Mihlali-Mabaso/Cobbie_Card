@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Date & Time (no venue to keep it clean like the reference) -->
           <div class="pass-details">
             <div class="pass-detail-row"><span class="detail-icon">📅</span><span>2 May 2026</span></div>
-            <div class="pass-detail-row"><span class="detail-icon">🕙</span><span>10:00 AM</span></div>
+            <div class="pass-detail-row"><span class="detail-icon">🕦</span><span>11:30 AM</span></div>
           </div>
 
           <!-- ── AVATAR (large, centered) ── -->
