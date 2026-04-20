@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Cobby Card 🎟️ – COB Meet & Greet 2026</title>
+  <meta name="description" content="Grab your digital pass for COB Meet & Greet 2026! RSVP and generate your unique Cobby Card." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== BACKGROUND DECORATIONS ===== -->
+  <div class="bg-stars" aria-hidden="true">
+    <span class="star s1">★</span>
+    <span class="star s2">✦</span>
+    <span class="star s3">★</span>
+    <span class="star s4">✦</span>
+    <span class="star s5">★</span>
+    <span class="star s6">✦</span>
+    <span class="star s7">★</span>
+  </div>
+
+  <!-- ===== APP CONTAINER ===== -->
+  <div class="app-container">
+
+    <!-- ===== SCREEN 1: RSVP FORM ===== -->
+    <div id="screen-rsvp" class="screen active">
+
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-logo" aria-label="CreateOnBase Logo">
+          <svg width="52" height="52" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" fill="#1a8fe3"/>
+            <circle cx="32" cy="32" r="22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
+            <text x="32" y="42" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="28" font-weight="900" fill="#fff">C</text>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="app-title">Cobby Card <span class="ticket-emoji">🎟️</span></h1>
+          <p class="app-subtitle">Grab your pass – COB Meet &amp; Greet 2026 🎉</p>
+        </div>
+      </header>
+
+      <!-- RSVP Form -->
+      <main class="form-container">
+        <form id="rsvp-form" novalidate>
+
+          <!-- Full Name -->
+          <div class="field-group">
+            <label for="fullName" class="field-label">FULL NAME</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                placeholder="Your full name"
+                required
+                autocomplete="name"
+              />
+            </div>
+            <span class="field-error" id="fullName-error"></span>
+          </div>
+
+          <!-- Student Number -->
+          <div class="field-group">
+            <label for="studentNumber" class="field-label">STUDENT NUMBER</label>
+            <div class="input-wrapper input-wrapper--orange">
+              <span class="input-icon">🪪</span>
+              <input
+                type="text"
+                id="studentNumber"
+                name="studentNumber"
+                placeholder="e.g. 202412345"
+                required
+                inputmode="numeric"
+              />
+            </div>
+            <span class="field-error" id="studentNumber-error"></span>
+          </div>
+
+          <!-- Email -->
+          <div class="field-group">
+            <label for="email" class="field-label">EMAIL</label>
+            <div class="input-wrapper input-wrapper--green">
+              <span class="input-icon">✉️</span>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@university.edu"
+                required
+                autocomplete="email"
+              />
+            </div>
+            <span class="field-error" id="email-error"></span>
+          </div>
+
+          <!-- Career Track -->
+          <div class="field-group">
+            <label class="field-label">CAREER TRACK <span class="deco">✿</span></label>
+            <div class="chips-grid" id="track-chips" role="group" aria-label="Career Track">
+              <button type="button" class="chip chip--blue"   data-track="🌐 Web Dev & Mobile" id="chip-web">🌐 Web Dev &amp; Mobile</button>
+              <button type="button" class="chip chip--purple" data-track="📊 Data"              id="chip-data">📊 Data</button>
+              <button type="button" class="chip chip--red"    data-track="🛡️ Security"           id="chip-sec">🛡️ Security</button>
+              <button type="button" class="chip chip--pink"   data-track="🎨 UI/UX"             id="chip-uiux">🎨 UI/UX</button>
+              <button type="button" class="chip chip--gray"   data-track="🤔 Not Sure Yet"      id="chip-ns">🤔 Not Sure Yet</button>
+            </div>
+            <input type="hidden" id="selectedTrack" name="selectedTrack" />
+            <span class="field-error" id="track-error"></span>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="button" class="btn-generate" id="btn-generate">
+            <span class="btn-balloon" aria-hidden="true">🎈</span>
+            Generate My Cobby Card
+            <span class="btn-balloon" aria-hidden="true">🎈</span>
+          </button>
+
+        </form>
+
+        <!-- Live Preview -->
+        <section class="live-preview-section" id="live-preview-section" aria-label="Live Preview">
+          <h2 class="section-heading">✦ LIVE PREVIEW ✦</h2>
+          <div class="mini-card" id="mini-card">
+            <div class="mini-card__avatar-col">
+              <img
+                id="preview-avatar"
+                src="https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=cobby"
+                alt="Avatar"
+                class="mini-card__avatar"
+                width="72"
+                height="72"
+              />
+              <div class="mini-kitty" aria-hidden="true">🐱</div>
+            </div>
+            <div class="mini-card__info">
+              <p class="mini-card__name" id="preview-name">Your Name</p>
+              <span class="mini-card__track" id="preview-track">Pick a track</span>
+              <p class="mini-card__id" id="preview-id">ID: —</p>
+              <p class="mini-card__date">📅 2 May 2026</p>
+              <p class="mini-card__msg">Can't wait to see you at the meetup! ❤️</p>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div><!-- /screen-rsvp -->
+
+
+    <!-- ===== SCREEN 2: MY CARD ===== -->
+    <div id="screen-card" class="screen">
+      <main class="card-screen-main">
+        <div class="pass-wrapper" id="pass-wrapper">
+          <!-- Card generated by JS -->
+          <div class="empty-card-state" id="empty-card-state">
+            <p class="empty-icon">🎟️</p>
+            <p class="empty-text">Fill in the RSVP form and<br/>generate your Cobby Card!</p>
+          </div>
+        </div>
+      </main>
+    </div><!-- /screen-card -->
+
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav" role="navigation" aria-label="Main Navigation">
+      <button class="nav-tab active" id="tab-rsvp" data-screen="screen-rsvp" aria-label="RSVP Tab">
+        <span class="nav-icon">✏️</span>
+        <span class="nav-label">RSVP</span>
+      </button>
+      <button class="nav-tab" id="tab-card" data-screen="screen-card" aria-label="My Card Tab">
+        <span class="nav-icon">🎟️</span>
+        <span class="nav-label">My Card</span>
+      </button>
+    </nav>
+
+  </div><!-- /app-container -->
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- Credit -->
+  <div class="app-credit">Made with ❤️ by <strong>Teddy</strong> · COB_President</div>
+
+  <!-- html2canvas – card download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
