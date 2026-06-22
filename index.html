@@ -1,148 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Cobby Card 🎟️ – COB Meet & Greet 2026</title>
-  <meta name="description" content="Grab your digital pass for COB Meet & Greet 2026! RSVP and generate your unique Cobby Card." />
+  <title>StartupX Builder Card 🎟️ – COB Meet & Greet 2026</title>
+  <meta name="description"
+    content="RSVP and generate your unique StartupX Builder Card event pass for the COB Meet & Greet 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Press+Start+2P&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- ===== BACKGROUND DECORATIONS ===== -->
-  <div class="bg-stars" aria-hidden="true">
-    <span class="star s1">★</span>
-    <span class="star s2">✦</span>
-    <span class="star s3">★</span>
-    <span class="star s4">✦</span>
-    <span class="star s5">★</span>
-    <span class="star s6">✦</span>
-    <span class="star s7">★</span>
+  <!-- ===== PIXEL BACKGROUND GRID & DECORATIONS ===== -->
+  <div class="pixel-grid-bg" aria-hidden="true"></div>
+  <div class="bg-decorations" aria-hidden="true">
+    <span class="retro-star s1">★</span>
+    <span class="retro-star s2">✦</span>
+    <span class="retro-star s3">★</span>
+    <span class="retro-star s4">✦</span>
+    <span class="retro-star s5">★</span>
+    <span class="retro-star s6">✦</span>
+    <span class="retro-star s7">★</span>
+    <div class="pixel-cloud c1"></div>
+    <div class="pixel-cloud c2"></div>
   </div>
 
-  <!-- ===== APP CONTAINER ===== -->
+  <!-- ===== APP WRAPPER ===== -->
   <div class="app-container">
 
-    <!-- ===== SCREEN 1: RSVP FORM ===== -->
+    <!-- ===== SCREEN 1: RSVP FORM & LOOKUP ===== -->
     <div id="screen-rsvp" class="screen active">
 
-      <!-- Header -->
+      <!-- Top Partner Header -->
       <header class="app-header">
-        <div class="header-logo" aria-label="CreateOnBase Logo">
-          <svg width="52" height="52" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="30" fill="#1a8fe3"/>
-            <circle cx="32" cy="32" r="22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
-            <text x="32" y="42" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="28" font-weight="900" fill="#fff">C</text>
-          </svg>
+        <div class="partner-logos">
+          <div class="brand-cob">
+            <span class="brand-c-icon">C</span>
+            <div class="brand-cob-text">
+              <span class="brand-name-top">CREATEONBASE</span>
+              <span class="brand-tag-top">BREATH LIFE TO YOUR CODING SKILLS</span>
+            </div>
+          </div>
+          <div class="partner-x">✕</div>
+          <div class="brand-startupx">
+            <span class="brand-name-sx">Startup<span class="orange-x">X</span></span>
+            <span class="brand-tag-sx">BUILD. LAUNCH. GROW</span>
+          </div>
         </div>
-        <div class="header-text">
-          <h1 class="app-title">Cobby Card <span class="ticket-emoji">🎟️</span></h1>
-          <p class="app-subtitle">Grab your pass – COB Meet &amp; Greet 2026 🎉</p>
+        <div class="banner-title-box">
+          <h1 class="pixel-banner-title">STARTUPX BUILDER CARD</h1>
         </div>
+        <p id="db-status-badge"
+          style="font-family:var(--font-px);font-size:.4rem;text-align:center;margin-top:6px;color:#a19c98;letter-spacing:.5px;">
+          ⏳ Connecting...</p>
       </header>
 
-      <!-- RSVP Form -->
+      <!-- Toggle/Lookup Bar -->
+      <div class="lookup-bar">
+        <span class="lookup-text">Already registered?</span>
+        <div class="lookup-input-group">
+          <input type="text" id="lookup-student-id" placeholder="Student ID" inputmode="numeric" />
+          <button type="button" id="btn-lookup" class="pixel-btn pixel-btn--small">Retrieve Pass</button>
+        </div>
+      </div>
+
+      <!-- Main RSVP Character Creator Form -->
       <main class="form-container">
         <form id="rsvp-form" novalidate>
 
-          <!-- Full Name -->
-          <div class="field-group">
-            <label for="fullName" class="field-label">NAME and SURNAME</label>
-            <div class="input-wrapper">
-              <span class="input-icon">👤</span>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                placeholder="Your full name"
-                required
-                autocomplete="name"
-              />
-            </div>
-            <span class="field-error" id="fullName-error"></span>
+          <!-- FORM STEPS NAVIGATION -->
+          <div class="steps-nav" role="tablist" aria-label="RSVP Form Steps">
+            <button type="button" class="step-tab active" data-step="1" role="tab" aria-selected="true" id="tab-step-1">
+              <span class="step-num">01</span>
+              <span class="step-lbl">Identity</span>
+            </button>
+            <button type="button" class="step-tab" data-step="2" role="tab" aria-selected="false" id="tab-step-2">
+              <span class="step-num">02</span>
+              <span class="step-lbl">Tools & Platforms</span>
+            </button>
+            <button type="button" class="step-tab" data-step="3" role="tab" aria-selected="false" id="tab-step-3">
+              <span class="step-num">03</span>
+              <span class="step-lbl">Projects</span>
+            </button>
+            <button type="button" class="step-tab" data-step="4" role="tab" aria-selected="false" id="tab-step-4">
+              <span class="step-num">04</span>
+              <span class="step-lbl">Portfolio</span>
+            </button>
           </div>
 
-          <!-- Student Number -->
-          <div class="field-group">
-            <label for="studentNumber" class="field-label">STUDENT NUMBER</label>
-            <div class="input-wrapper input-wrapper--orange">
-              <span class="input-icon">🪪</span>
-              <input
-                type="text"
-                id="studentNumber"
-                name="studentNumber"
-                placeholder="e.g. 202412345"
-                required
-                inputmode="numeric"
-              />
+          <!-- STEP 1: IDENTITY & ACADEMIC -->
+          <div class="form-step-content active" id="step-content-1">
+            <h2 class="form-section-title">✦ PROFILE IDENTITY ✦</h2>
+
+            <div class="field-group">
+              <label for="fullName" class="field-label">Full Name <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="fullName" name="fullName" placeholder="Name & Surname" required
+                  autocomplete="name" />
+              </div>
+              <span class="field-error" id="fullName-error"></span>
             </div>
-            <span class="field-error" id="studentNumber-error"></span>
+
+            <div class="field-group">
+              <label for="studentNumber" class="field-label">Student Number <span class="required">*</span></label>
+              <div class="input-wrapper input-wrapper--orange">
+                <span class="input-icon">🪪</span>
+                <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2025718921" required
+                  inputmode="numeric" />
+              </div>
+              <span class="field-error" id="studentNumber-error"></span>
+            </div>
+
+            <div class="field-group">
+              <label for="email" class="field-label">Email Address <span class="required">*</span></label>
+              <div class="input-wrapper input-wrapper--green">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="email" name="email" placeholder="you@university.edu" required
+                  autocomplete="email" />
+              </div>
+              <span class="field-error" id="email-error"></span>
+            </div>
+
+            <div class="field-group">
+              <label for="contactNumber" class="field-label">Contact Number <span class="required">*</span></label>
+              <div class="input-wrapper input-wrapper--blue">
+                <span class="input-icon">📞</span>
+                <input type="tel" id="contactNumber" name="contactNumber" placeholder="e.g. +27 71 123 4567" required
+                  autocomplete="tel" />
+              </div>
+              <span class="field-error" id="contactNumber-error"></span>
+            </div>
+
+            <h2 class="form-section-title sec-spacing">✦ ACADEMIC INFO ✦</h2>
+
+            <div class="field-group">
+              <label for="qualification" class="field-label">Qualification / Degree <span
+                  class="required">*</span></label>
+              <div class="input-wrapper">
+                <span class="input-icon">🎓</span>
+                <input type="text" id="qualification" name="qualification" placeholder="e.g. BSc Information Technology"
+                  required />
+              </div>
+              <span class="field-error" id="qualification-error"></span>
+            </div>
+
+            <div class="grid-2-col">
+              <div class="field-group">
+                <label for="yearOfStudy" class="field-label">Year of Study <span class="required">*</span></label>
+                <div class="select-wrapper">
+                  <select id="yearOfStudy" name="yearOfStudy" required>
+                    <option value="" disabled selected>Select Year</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                    <option value="Honours">Honours</option>
+                    <option value="Masters">Masters</option>
+                    <option value="PhD">PhD</option>
+                  </select>
+                </div>
+                <span class="field-error" id="yearOfStudy-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="faculty" class="field-label">Faculty <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <input type="text" id="faculty" name="faculty" placeholder="e.g. Natural Sciences" required />
+                </div>
+                <span class="field-error" id="faculty-error"></span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="customQuote" class="field-label">Card Quote / Tagline <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <span class="input-icon">💬</span>
+                <input type="text" id="customQuote" name="customQuote"
+                  placeholder="e.g. Building real products for real startups." required />
+              </div>
+              <span class="field-error" id="customQuote-error"></span>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="pixel-btn btn-next-step" data-next="2">Next Step: Skills ➔</button>
+            </div>
           </div>
 
-          <!-- Email -->
-          <div class="field-group">
-            <label for="email" class="field-label">EMAIL</label>
-            <div class="input-wrapper input-wrapper--green">
-              <span class="input-icon">✉️</span>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="you@university.edu"
-                required
-                autocomplete="email"
-              />
+          <!-- STEP 2: TECHNICAL SKILLS & INTERESTS -->
+          <div class="form-step-content" id="step-content-2">
+            <h2 class="form-section-title">✦ TECH SKILL MATRIX ✦</h2>
+            <p class="form-section-subtitle">Indicate proficiency level for each technology:</p>
+
+            <div class="skills-scroll-container">
+              <!-- Skill matrix removed in favor of tools & platforms -->
             </div>
-            <span class="field-error" id="email-error"></span>
+
+            <div class="field-group sec-spacing">
+              <label for="otherSkills" class="field-label">Other Technical Skills</label>
+              <div class="input-wrapper">
+                <input type="text" id="otherSkills" name="otherSkills" placeholder="e.g. Go, Rust, Ruby" />
+              </div>
+            </div>
+
+            <h2 class="form-section-title sec-spacing">✦ AREAS OF INTEREST (Select one or more) ✦</h2>
+            <div class="interests-grid" id="interests-container">
+              <!-- Selected checkbox items styled as gaming badges -->
+            </div>
+            <span class="field-error" id="interests-error"></span>
+
+            <div class="step-actions">
+              <button type="button" class="pixel-btn pixel-btn--gray btn-prev-step" data-prev="1">⇠ Back</button>
+              <button type="button" class="pixel-btn btn-next-step" data-next="3">Next: Experience ➔</button>
+            </div>
           </div>
 
-          <!-- Career Track -->
-          <div class="field-group">
-            <label class="field-label">CAREER TRACK <span class="deco">✿</span></label>
-            <div class="chips-grid" id="track-chips" role="group" aria-label="Career Track">
-              <button type="button" class="chip chip--blue"   data-track="🌐 Web Dev & Mobile" id="chip-web">🌐 Web Dev &amp; Mobile</button>
-              <button type="button" class="chip chip--purple" data-track="📊 Data"              id="chip-data">📊 Data</button>
-              <button type="button" class="chip chip--red"    data-track="🛡️ Security"           id="chip-sec">🛡️ Security</button>
-              <button type="button" class="chip chip--pink"   data-track="🎨 UI/UX"             id="chip-uiux">🎨 UI/UX</button>
-              <button type="button" class="chip chip--gray"   data-track="🤔 Not Sure Yet"      id="chip-ns">🤔 Not Sure Yet</button>
+          <!-- STEP 3: TOOLS & PROJECTS -->
+          <div class="form-step-content" id="step-content-3">
+            <h2 class="form-section-title">✦ TOOLS & PLATFORMS (Experience with) ✦</h2>
+            <div class="tools-grid" id="tools-container">
+              <!-- GitHub, Git, Firebase, Vercel, Netlify, Figma, AWS, Azure, Google Cloud, Docker -->
             </div>
-            <input type="hidden" id="selectedTrack" name="selectedTrack" />
-            <span class="field-error" id="track-error"></span>
+
+            <div class="field-group sec-spacing">
+              <label for="otherTools" class="field-label">Other Relevant Tools</label>
+              <div class="input-wrapper">
+                <input type="text" id="otherTools" name="otherTools" placeholder="e.g. Jenkins, Kubernetes, Postman" />
+              </div>
+            </div>
+
+            <h2 class="form-section-title sec-spacing">✦ PROJECT EXPERIENCE ✦</h2>
+            <div class="experience-questions">
+
+              <div class="exp-row">
+                <span class="exp-question">Have you built a website before?</span>
+                <div class="exp-toggle">
+                  <label class="toggle-btn"><input type="radio" name="expWebsite" value="Yes" /><span>Yes</span></label>
+                  <label class="toggle-btn"><input type="radio" name="expWebsite" value="No"
+                      checked /><span>No</span></label>
+                </div>
+              </div>
+
+              <div class="exp-row">
+                <span class="exp-question">Have you built a mobile application before?</span>
+                <div class="exp-toggle">
+                  <label class="toggle-btn"><input type="radio" name="expMobile" value="Yes" /><span>Yes</span></label>
+                  <label class="toggle-btn"><input type="radio" name="expMobile" value="No"
+                      checked /><span>No</span></label>
+                </div>
+              </div>
+
+              <div class="exp-row">
+                <span class="exp-question">Have you worked on a software project before?</span>
+                <div class="exp-toggle">
+                  <label class="toggle-btn"><input type="radio" name="expProject" value="Yes" /><span>Yes</span></label>
+                  <label class="toggle-btn"><input type="radio" name="expProject" value="No"
+                      checked /><span>No</span></label>
+                </div>
+              </div>
+
+              <div class="exp-row">
+                <span class="exp-question">Have you worked in a team project before?</span>
+                <div class="exp-toggle">
+                  <label class="toggle-btn"><input type="radio" name="expTeam" value="Yes" /><span>Yes</span></label>
+                  <label class="toggle-btn"><input type="radio" name="expTeam" value="No"
+                      checked /><span>No</span></label>
+                </div>
+              </div>
+
+              <div class="exp-row">
+                <span class="exp-question">Have you worked with a real client before?</span>
+                <div class="exp-toggle">
+                  <label class="toggle-btn"><input type="radio" name="expClient" value="Yes" /><span>Yes</span></label>
+                  <label class="toggle-btn"><input type="radio" name="expClient" value="No"
+                      checked /><span>No</span></label>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="pixel-btn pixel-btn--gray btn-prev-step" data-prev="2">⇠ Back</button>
+              <button type="button" class="pixel-btn btn-next-step" data-next="4">Next: Portfolio ➔</button>
+            </div>
           </div>
 
-          <!-- Submit Button -->
-          <button type="button" class="btn-generate" id="btn-generate">
-            <span class="btn-balloon" aria-hidden="true">🎈</span>
-            Generate My Cobby Card
-            <span class="btn-balloon" aria-hidden="true">🎈</span>
-          </button>
+          <!-- STEP 4: PORTFOLIO & SUBMIT -->
+          <div class="form-step-content" id="step-content-4">
+            <h2 class="form-section-title">✦ PORTFOLIO LINKS (Optional) ✦</h2>
+
+            <div class="field-group">
+              <label for="linkGithub" class="field-label">GitHub Profile Link</label>
+              <div class="input-wrapper input-wrapper--dark">
+                <span class="input-icon">💻</span>
+                <input type="url" id="linkGithub" name="linkGithub" placeholder="github.com/username" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="linkLinkedin" class="field-label">LinkedIn Profile Link</label>
+              <div class="input-wrapper input-wrapper--blue">
+                <span class="input-icon">👔</span>
+                <input type="url" id="linkLinkedin" name="linkLinkedin" placeholder="linkedin.com/in/username" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="linkWebsite" class="field-label">Portfolio Website</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🌐</span>
+                <input type="url" id="linkWebsite" name="linkWebsite" placeholder="yourportfolio.dev" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="linkProjects" class="field-label">Links to Previous Projects</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔗</span>
+                <input type="url" id="linkProjects" name="linkProjects"
+                  placeholder="e.g. vercel.app or netlify.app link" />
+              </div>
+            </div>
+
+            <h2 class="form-section-title sec-spacing">✦ AVAILABILITY & RSVP ✦</h2>
+
+            <div class="availability-card">
+              <div class="availability-checkbox-wrap">
+                <input type="checkbox" id="challengeAvailability" name="challengeAvailability" value="Yes" />
+                <label for="challengeAvailability" class="avail-label">
+                  <span class="pixel-checkbox-box"></span>
+                  <span class="avail-text-main">Available for the full 48-hour challenge?</span>
+                </label>
+              </div>
+              <p class="avail-desc">Check this box if you can attend the full hackathon / coding event challenge. We'd
+                love to have you!</p>
+            </div>
+
+            <div class="step-actions sec-spacing">
+              <button type="button" class="pixel-btn pixel-btn--gray btn-prev-step" data-prev="3">⇠ Back</button>
+              <button type="button" class="pixel-btn pixel-btn--orange" id="btn-generate">
+                <span class="pixel-rocket-anim" aria-hidden="true">🚀</span>
+                SUBMIT & GENERATE PASS
+              </button>
+            </div>
+          </div>
 
         </form>
 
-        <!-- Live Preview -->
-        <section class="live-preview-section" id="live-preview-section" aria-label="Live Preview">
-          <h2 class="section-heading">✦ LIVE PREVIEW ✦</h2>
+        <!-- Live Preview Panel on Form Screen -->
+        <section class="live-preview-section" aria-label="Live Preview">
+          <h2 class="section-heading">✦ LIVE CARD PREVIEW ✦</h2>
           <div class="mini-card" id="mini-card">
             <div class="mini-card__avatar-col">
-              <img
-                id="preview-avatar"
-                src="https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=cobby"
-                alt="Avatar"
-                class="mini-card__avatar"
-                width="72"
-                height="72"
-              />
-              <div class="mini-kitty" aria-hidden="true">🐱</div>
+              <div class="preview-avatar-wrapper" id="preview-avatar-container">
+                <!-- SVG injected dynamically -->
+              </div>
+              <div class="mini-kitty" aria-hidden="true">👾</div>
             </div>
             <div class="mini-card__info">
-              <p class="mini-card__name" id="preview-name">Your Name</p>
-              <span class="mini-card__track" id="preview-track">Pick a track</span>
-              <p class="mini-card__id" id="preview-id">ID: —</p>
-              <p class="mini-card__date">📅 2 May 2026</p>
-              <p class="mini-card__msg">Can't wait to see you at the meetup! ❤️</p>
+              <p class="mini-card__name" id="preview-name">YOUR NAME</p>
+              <span class="mini-card__track" id="preview-track">Developer Identity</span>
+              <p class="mini-card__id" id="preview-id">ID: 2025XXXXXX</p>
+              <p class="mini-card__quote" id="preview-quote">"Building real products for real startups."</p>
+
             </div>
           </div>
         </section>
@@ -151,31 +377,28 @@
     </div><!-- /screen-rsvp -->
 
 
-    <!-- ===== SCREEN 2: MY CARD ===== -->
+    <!-- ===== SCREEN 2: TICKET PASS CARD VIEW ===== -->
     <div id="screen-card" class="screen">
+
+      <!-- Top Nav actions -->
+      <div class="card-screen-nav">
+        <button type="button" id="btn-back-to-rsvp" class="pixel-btn pixel-btn--gray">
+          <span>⬅</span> Edit Profile
+        </button>
+        <h2 class="screen-title-pixel">YOUR BUILDER PASS</h2>
+      </div>
+
       <main class="card-screen-main">
         <div class="pass-wrapper" id="pass-wrapper">
-          <!-- Card generated by JS -->
+          <!-- Card generated dynamically by JS matching Image 2 perfectly -->
           <div class="empty-card-state" id="empty-card-state">
             <p class="empty-icon">🎟️</p>
-            <p class="empty-text">Fill in the RSVP form and<br/>generate your Cobby Card!</p>
+            <p class="empty-text">Fill in the RSVP form and<br />generate your Cobby Pass!</p>
           </div>
         </div>
       </main>
+
     </div><!-- /screen-card -->
-
-
-    <!-- ===== BOTTOM NAV ===== -->
-    <nav class="bottom-nav" role="navigation" aria-label="Main Navigation">
-      <button class="nav-tab active" id="tab-rsvp" data-screen="screen-rsvp" aria-label="RSVP Tab">
-        <span class="nav-icon">✏️</span>
-        <span class="nav-label">RSVP</span>
-      </button>
-      <button class="nav-tab" id="tab-card" data-screen="screen-card" aria-label="My Card Tab">
-        <span class="nav-icon">🎟️</span>
-        <span class="nav-label">My Card</span>
-      </button>
-    </nav>
 
   </div><!-- /app-container -->
 
@@ -183,13 +406,12 @@
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
   <!-- Credit -->
-  <div class="app-credit">Made with ❤️ by <strong>Teddy</strong> · COB_President</div>
+  <div class="app-credit">Designed &amp; Maintained by <strong>CreateOnBase Team</strong> · Meet &amp; Greet 2026</div>
 
-  <!-- html2canvas – card download -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="script.js"></script>
 </body>
-</html>
 
+</html>
