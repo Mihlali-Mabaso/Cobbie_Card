@@ -9,8 +9,8 @@
 // =============================================
 // SUPABASE CONFIGURATION
 // =============================================
-const SUPABASE_URL = 'https://eaelzwhfxtyhcqzcvhki.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_EqGsGjUoJ4Db-T-MMHcGFw_L5W-HiDO';
+const SUPABASE_URL = 'https://eaelzwhfxtyhcqzcvhki.supabase.co'; 
+const SUPABASE_ANON = 'sb_publishable_EqGsGjUoJ4Db-T-MMHcGFw_L5W-HiDO'; 
 
 // =============================================
 // STATE & CONSTANTS
