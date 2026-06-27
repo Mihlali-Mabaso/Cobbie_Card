@@ -9,8 +9,8 @@
 // =============================================
 // SUPABASE CONFIGURATION
 // =============================================
-const SUPABASE_URL = 'https://eaelzwhfxtyhcqzcvhki.supabase.co'; 
-const SUPABASE_ANON = 'sb_publishable_EqGsGjUoJ4Db-T-MMHcGFw_L5W-HiDO'; 
+const SUPABASE_URL = 'https://eaelzwhfxtyhcqzcvhki.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVhZWx6d2hmeHR5aGNxemN2aGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2Mzg5OTQsImV4cCI6MjA5MjIxNDk5NH0.z1hQ1f9abyPrGtSlwoWppn33McoSyr7Ew8f9pz0O2Vk';
 
 // =============================================
 // STATE & CONSTANTS
@@ -18,6 +18,37 @@ const SUPABASE_ANON = 'sb_publishable_EqGsGjUoJ4Db-T-MMHcGFw_L5W-HiDO';
 let supabaseClient = null;
 const attendees = [];
 let currentCardData = null;
+
+// =============================================
+// LOCAL STORAGE CACHE (Offline Fallback)
+// =============================================
+const LS_KEY = 'startupx_cards_cache';
+
+function getCachedCards() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    console.warn('[StartupX] localStorage read failed:', e.message);
+    return {};
+  }
+}
+
+function cacheCardData(studentNumber, data) {
+  try {
+    const cache = getCachedCards();
+    cache[studentNumber] = { ...data, cachedAt: new Date().toISOString() };
+    localStorage.setItem(LS_KEY, JSON.stringify(cache));
+    console.log('[StartupX] 💾 Card cached locally for:', studentNumber);
+  } catch (e) {
+    console.warn('[StartupX] localStorage write failed:', e.message);
+  }
+}
+
+function getCachedCard(studentNumber) {
+  const cache = getCachedCards();
+  return cache[studentNumber] || null;
+}
 
 // Form standard selections
 const SKILLS_LIST = [
@@ -822,6 +853,8 @@ document.addEventListener('DOMContentLoaded', () => {
      DATABASE COMMUNICATIONS (SUPABASE)
   -------------------------------------------------- */
   async function saveToSupabase(data) {
+    // Always cache locally for offline fallback (works on all devices)
+    cacheCardData(data.studentNumber, data);
     if (!supabaseClient) return;
     try {
       const { error } = await supabaseClient.from('attendees').insert([{
@@ -948,6 +981,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           currentCardData = parsedData;
+          cacheCardData(parsedData.studentNumber, parsedData);
           generateCardMarkup(parsedData);
           switchScreen('screen-card');
           showToast(`👋 Welcome back, ${parsedData.fullName}! Loaded pass successfully.`, 'success');
@@ -958,7 +992,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Check local cache
+      // Fallback 1: check localStorage cache
+      const cached = getCachedCard(studentId);
+      if (cached) {
+        currentCardData = cached;
+        generateCardMarkup(cached);
+        switchScreen('screen-card');
+        showToast(`👋 Loaded from saved cache, ${cached.fullName}!`, 'success');
+        lookupInput.value = '';
+        return;
+      }
+
+      // Fallback 2: check in-memory array
       const localFound = attendees.find(a => a.studentNumber === studentId);
       if (localFound) {
         currentCardData = localFound;
@@ -967,12 +1012,35 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(`👋 Loaded card from memory, ${localFound.fullName}!`, 'success');
         lookupInput.value = '';
       } else {
-        showToast('❌ Student ID not found in database.', 'error');
+        showToast('❌ Student ID not found. Please register using the form below.', 'error');
       }
 
     } catch (err) {
       console.error('[StartupX] Lookup failed:', err.message);
-      showToast('❌ Database connection error.', 'error');
+
+      // DB failed — try localStorage cache before giving up
+      const cached = getCachedCard(studentId);
+      if (cached) {
+        currentCardData = cached;
+        generateCardMarkup(cached);
+        switchScreen('screen-card');
+        showToast(`👋 Loaded from offline cache, ${cached.fullName}! (DB temporarily unavailable)`, 'info');
+        lookupInput.value = '';
+        return;
+      }
+
+      // Try in-memory
+      const localFound = attendees.find(a => a.studentNumber === studentId);
+      if (localFound) {
+        currentCardData = localFound;
+        generateCardMarkup(localFound);
+        switchScreen('screen-card');
+        showToast(`👋 Loaded from memory, ${localFound.fullName}!`, 'success');
+        lookupInput.value = '';
+        return;
+      }
+
+      showToast('⚠ Connection issue — check your internet and try again, or register below.', 'error');
     } finally {
       btnLookup.disabled = false;
       btnLookup.textContent = originalText;
@@ -1111,6 +1179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     attendees.push(studentData);
     currentCardData = studentData;
+    cacheCardData(studentData.studentNumber, studentData);
 
     // Send payload to Supabase
     saveToSupabase(studentData);
@@ -1212,14 +1281,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const pngDataUrl = canvas.toDataURL('image/png');
 
-      // Trigger standard file download
       const safeName = (data.fullName || 'builder-pass')
         .toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const fileName = `startupx-pass-${safeName}.png`;
 
+      // Convert data URL to Blob for sharing/downloading
+      const pngResponse = await fetch(pngDataUrl);
+      const pngBlob = await pngResponse.blob();
+
+      // Mobile: Use Web Share API if available (works on Android & iOS)
+      if (navigator.share && navigator.canShare) {
+        try {
+          const file = new File([pngBlob], fileName, { type: 'image/png' });
+          const shareData = { files: [file], title: 'My StartupX Builder Card', text: 'Check out my StartupX Builder Card! 🎟️' };
+          if (navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+            showInviteModal(data, pngDataUrl);
+            return;
+          }
+        } catch (shareErr) {
+          if (shareErr.name !== 'AbortError') {
+            console.warn('[StartupX] Share API failed, falling back to download:', shareErr.message);
+          }
+        }
+      }
+
+      // Desktop / fallback: trigger file download via blob URL
+      const blobUrl = URL.createObjectURL(pngBlob);
       const link = document.createElement('a');
-      link.download = `startupx-pass-${safeName}.png`;
-      link.href = pngDataUrl;
+      link.download = fileName;
+      link.href = blobUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 
       // Show congratulations sharing modal overlay
       showInviteModal(data, pngDataUrl);
